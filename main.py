@@ -93,7 +93,24 @@ def move():
         
     snake.x += velocityX * KARE
     snake.y += velocityY * KARE
+  
+def restart_game():
+    global snake, food, snake_body, velocityX, velocityY, gameOver, puan
 
+    snake = Tile(10 * KARE, 10 * KARE)
+    food = Tile(15 * KARE, 10 * KARE)
+    snake_body = []
+    velocityX = 0
+    velocityY = 0
+    gameOver = False
+    puan = 0
+
+def handle_key(er):
+    if er.keysym == "r" or er.keysym == "R":
+        if gameOver:
+            restart_game()
+    else:
+        change_direction(er)
 def draw():
     global snake, food, snake_body, gameOver, puan
     move()
@@ -102,20 +119,20 @@ def draw():
     canvas.create_rectangle(food.x, food.y, food.x+KARE, food.y+KARE, fill="red")
     #yılan
     canvas.create_rectangle(snake.x, snake.y, snake.x+KARE, snake.y+KARE, fill="white")
-
+    
     for tile in snake_body:
-       canvas.create_rectangle(tile.x, tile.y, tile.x+KARE, tile.y+KARE, fill="white")
+       canvas.create_rectangle(tile.x, tile.y, tile.x+KARE, tile.y+KARE, fill="lime")
 
     if(gameOver):
        canvas.create_text(WINDOW_WIDTH/2, WINDOW_HEIGHT/2, font="Tahoma 50 bold", text = f"Oyun Bitti", fill="Red")
-       canvas.create_text(WINDOW_WIDTH/2, WINDOW_HEIGHT/2 + 40, font="Arial 10", text = f"Puan:{puan}", fill="white")
-
+       canvas.create_text(WINDOW_WIDTH/2, WINDOW_HEIGHT/2 + 45, font="Arial 20", text = f"Puan:{puan}", fill="white")
+       canvas.create_text(WINDOW_WIDTH/2, WINDOW_HEIGHT/2 + 150,
+                   font="Arial 10", text="Tekrar Oynamak İçin R Tuşuna Basın.", fill="white")
     else:
-       canvas.create_text(30,20, font="TimesNewRoman 15", text = f"Puan:{puan}", fill="white" ) 
-
+       canvas.create_text(30,20, font="TimesNewRoman 15", text = f"Puan:{puan}", fill="white" )        
     #0.1 saniye sonra tekrar çiz (sürekli çizer)
     window.after(100,draw) 
 draw()
 
-window.bind("<KeyRelease>", change_direction)
+window.bind("<KeyRelease>", handle_key)
 window.mainloop()
