@@ -42,6 +42,8 @@ snake_body = []
 velocityX = 0
 velocityY = 0
 gameOver = False
+puan = 0
+
 def change_direction(e):
    global velocityX, velocityY, gameOver
    if(e.keysym== "Up" and velocityY !=1):
@@ -60,7 +62,7 @@ def change_direction(e):
        return
     
 def move():
-    global snake ,food, snake_body, gameOver
+    global snake ,food, snake_body, gameOver, puan
     if(gameOver):
        return
     #kenarlara veya kendine çarparsa game over
@@ -77,7 +79,7 @@ def move():
         snake_body.append(Tile(food.x, food.y))
         food.x = random.randint(0,COLS-1) * KARE
         food.y = random.randint(0,ROWS-1) * KARE
-
+        puan += 1 
     for i in range(len(snake_body)-1, -1, -1):
        tile = snake_body[i]
        if(i == 0):
@@ -93,7 +95,7 @@ def move():
     snake.y += velocityY * KARE
 
 def draw():
-    global snake
+    global snake, food, snake_body, gameOver, puan
     move()
     canvas.delete("all")
     #yem
@@ -103,6 +105,14 @@ def draw():
 
     for tile in snake_body:
        canvas.create_rectangle(tile.x, tile.y, tile.x+KARE, tile.y+KARE, fill="white")
+
+    if(gameOver):
+       canvas.create_text(WINDOW_WIDTH/2, WINDOW_HEIGHT/2, font="Tahoma 50 bold", text = f"Oyun Bitti", fill="Red")
+       canvas.create_text(WINDOW_WIDTH/2, WINDOW_HEIGHT/2 + 40, font="Arial 10", text = f"Puan:{puan}", fill="white")
+
+    else:
+       canvas.create_text(30,20, font="TimesNewRoman 15", text = f"Puan:{puan}", fill="white" ) 
+
     #0.1 saniye sonra tekrar çiz (sürekli çizer)
     window.after(100,draw) 
 draw()
